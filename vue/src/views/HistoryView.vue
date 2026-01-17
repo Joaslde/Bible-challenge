@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen bg-slate-900 text-white overflow-hidden flex flex-col relative">
+  <div class="bg-slate-900 text-white overflow-hidden flex flex-col relative" style="height: 525px;">
     <header class="p-6 bg-slate-800/50 backdrop-blur-md border-b border-white/10">
       <h1 class="text-xl font-black tracking-tight">Progression Générale</h1>
       <p class="text-slate-400 text-xs">Standard actuel du jour : <span class="text-indigo-400 font-bold">{{ standardTheorique }} chapitres</span></p>
@@ -18,11 +18,11 @@
       >
         <div class="text-center mb-8">
           <div class="text-4xl mb-2">{{ getEmoji(user.cumul, standardTheorique) }}</div>
-          <h2 class="text-2xl font-bold truncate">{{ user.nom }}</h2>
+          <h2 class="text-2xl font-bold truncate" style="margin-top: -8px;">{{ user.nom }}</h2>
           <p class="text-indigo-400 font-black text-sm">{{ user.cumul }} / 260</p>
         </div>
 
-        <div class="flex-1 relative bg-slate-800 rounded-full w-12 mx-auto overflow-hidden shadow-inner border border-white/5">
+        <div class="flex-1 relative bg-slate-800 rounded-full mx-auto overflow-hidden shadow-inner border border-white/5" style="width: 52px;">
           <div 
             class="absolute w-full border-t-2 border-dashed border-indigo-500/50 z-10 transition-all duration-1000"
             :style="{ bottom: `${(standardTheorique / 260) * 100}%` }"
