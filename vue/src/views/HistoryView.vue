@@ -58,13 +58,33 @@ const userStats = ref([])
 const bibleRef = ref([])
 const loading = ref(true)
 
-const startDate = new Date('2026-01-12') 
+
+
+// On définit la date de début (Année, Mois-1, Jour) pour être en local pur
+// Note : Janvier est le mois 0 en JS, d'où le (2026, 0, 19)
+const startDate = new Date(2026, 0, 19); 
+
 const standardTheorique = computed(() => {
-  const today = new Date()
-  const diffTime = Math.abs(today - startDate)
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-  return diffDays * 5
+  const today = new Date();
+  
+  // On remet les deux dates à minuit pile (Heure Locale du Bénin)
+  const d1 = new Date(startDate);
+  d1.setHours(0, 0, 0, 0);
+  
+  const d2 = new Date(today);
+  d2.setHours(0, 0, 0, 0);
+
+  // Calcul de la différence en millisecondes
+  const diffTime = d2 - d1;
+  
+  // Calcul du nombre de jours (1000ms * 60s * 60m * 24h)
+  // On ajoute +1 pour que le jour même du départ soit le "Jour 1"
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  
+  // Si on est avant la date de début, on affiche 0, sinon diffDays * 5
+  return diffDays > 0 ? diffDays * 5 : 0;
 })
+
 
 const fetchData = async () => {
   loading.value = true
