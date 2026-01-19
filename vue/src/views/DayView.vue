@@ -59,36 +59,41 @@
   })
   
   const fetchTodayScores = async () => {
-    loading.value = true
-    const today = new Date().toISOString().split('T')[0]
+  loading.value = true
   
-    // 1. On récupère tous les utilisateurs
-    const { data: users, error: userError } = await supabase
-      .from('users')
-      .select('id, nom')
-      .order('nom')
-  
-    // 2. On récupère les logs du jour
-    const { data: logs, error: logError } = await supabase
-      .from('daily_logs')
-      .select('user_id, chapitres_lus')
-      .eq('date', today)
-  
-    if (userError || logError) {
-      console.error("Erreur de récupération")
-    } else {
-      // 3. On fusionne les données
-      userScores.value = users.map(user => {
-        const log = logs.find(l => l.user_id === user.id)
-        return {
-          ...user,
-          today_count: log ? log.chapitres_lus : 0
-        }
-      })
-    }
-    loading.value = false
+  // Correction ici : On récupère la date locale au format YYYY-MM-DD
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  const todayLocal = `${year}-${month}-${day}`
+
+  // 1. On récupère tous les utilisateurs
+  const { data: users, error: userError } = await supabase
+    .from('users')
+    .select('id, nom')
+    .order('nom')
+
+  // 2. On récupère les logs du jour (avec la date locale !)
+  const { data: logs, error: logError } = await supabase
+    .from('daily_logs')
+    .select('user_id, chapitres_lus')
+    .eq('date', todayLocal)
+
+  if (userError || logError) {
+    console.error("Erreur de récupération")
+  } else {
+    // 3. Fusion des données
+    userScores.value = users.map(user => {
+      const log = logs.find(l => l.user_id === user.id)
+      return {
+        ...user,
+        today_count: log ? log.chapitres_lus : 0
+      }
+    })
   }
-  
+  loading.value = false
+}  
   // Logique des couleurs
   const getBarColor = (count) => {
     if (count === 0) return 'bg-slate-200'
